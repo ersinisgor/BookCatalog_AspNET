@@ -11,7 +11,7 @@ builder.Services.AddDbContext<BookCatalog.Data.ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.File("logs.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 builder.Host.UseSerilog();
 
