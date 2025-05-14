@@ -10,15 +10,15 @@ namespace BookCatalog.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; } 
 
-        [Required(ErrorMessage = "Title is required.")]
+        [Required(ErrorMessage = "{0} is required.")]
         [StringLength(50,ErrorMessage ="{0} must be max {1} characters.")]
         public string Title { get; set; }
 
-        [Required(ErrorMessage = "Authro is required.")]
+        [Required(ErrorMessage = "{0} is required.")]
         [StringLength(50, ErrorMessage = "{0} must be max {1} characters.")]
         public string Author { get; set; }
 
-        [Required(ErrorMessage = "Genre is required.")]
+        [Required(ErrorMessage = "{0} is required.")]
         [StringLength(50, ErrorMessage = "{0} must be max {1} characters.")]
         public string Genre { get; set; }
 
