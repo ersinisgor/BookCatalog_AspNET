@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using BookCatalog.Domain.Entities;
 using BookCatalog.Infrastructure.Data;
 using BookCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
