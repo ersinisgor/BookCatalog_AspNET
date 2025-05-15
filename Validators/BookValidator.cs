@@ -9,7 +9,7 @@ namespace BookCatalog.Validations
             RuleFor(book => book.Title)
                 .NotNull()
                 .NotEmpty()
-                .Length(1,50);
+                .Length(1, 50);
             RuleFor(book => book.Author)
                 .NotNull()
                 .NotEmpty()
@@ -20,7 +20,8 @@ namespace BookCatalog.Validations
                 .Length(1,50);
             RuleFor(book => book.PageCount)
                 .NotNull()
-                .GreaterThan(0)
+                .NotEmpty().WithMessage("Page Count must be greater than 0.")
+                .GreaterThan(0).WithMessage("Page Count must be greater than 0.")
                 .WithName("Page Count");
         }
     }
