@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-namespace BookCatalog.Application.Controllers
+namespace BookCatalog.Presentation.Controllers
 {
     public class BookController(ApplicationDbContext _context, IValidator<Book> _validator) : Controller
     {

@@ -5,7 +5,8 @@ using BookCatalog.Shared.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookCatalog.Application.Controllers
+
+namespace BookCatalog.Presentation.Controllers
 {
     public class HomeController : Controller
     {
