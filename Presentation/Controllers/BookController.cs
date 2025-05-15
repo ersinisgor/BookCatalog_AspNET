@@ -1,5 +1,5 @@
-﻿using BookCatalog.Data;
-using BookCatalog.Domain.Entities;
+﻿using BookCatalog.Domain.Entities;
+using BookCatalog.Infrastructure.Data;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using BookCatalog.Data;
+using BookCatalog.Infrastructure.Data;
 using BookCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

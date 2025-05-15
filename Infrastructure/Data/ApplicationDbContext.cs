@@ -1,7 +1,7 @@
 ﻿using BookCatalog.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookCatalog.Data
+namespace BookCatalog.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {
