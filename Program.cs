@@ -7,7 +7,12 @@ using BookCatalog.Infrastructure.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddRazorOptions(options =>
+{
+    options.ViewLocationFormats.Clear();
+    options.ViewLocationFormats.Add("/Presentation/Views/{1}/{0}.cshtml");
+    options.ViewLocationFormats.Add("/Presentation/Views/Shared/{0}.cshtml");
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
