@@ -2,16 +2,25 @@
 using BookCatalog.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace BookCatalog.Controllers
 {
     public class BookController(ApplicationDbContext _context, IValidator<Book> _validator) : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var books = _context.Books.ToList();
-            return View(books);
+            try
+            {
+                var books = await _context.Books.ToListAsync();
+                return View(books);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error retrieving books");
+                return View("Error");
+            }
         }
 
         public IActionResult Create()
