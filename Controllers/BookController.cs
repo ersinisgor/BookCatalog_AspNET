@@ -107,6 +107,23 @@ namespace BookCatalog.Controllers
             }
         }
 
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            try
+            {
+                var book = await _context.Books.FindAsync(id);
+                if (book == null)
+                {
+                    return NotFound();
+                }
+                return View(book);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error retrieving book for deletion");
+                return View("Error");
+            }
+        }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
