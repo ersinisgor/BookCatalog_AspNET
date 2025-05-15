@@ -1,11 +1,12 @@
-﻿using BookCatalog.Models;
+﻿using BookCatalog.Domain.Entities;
 using FluentValidation;
 
-namespace BookCatalog.Validations
+namespace BookCatalog.Domain.Validators
 {
-    public class BookValidator: AbstractValidator<Book>
+    public class BookValidator : AbstractValidator<Book>
     {
-        public BookValidator() {
+        public BookValidator()
+        {
             RuleFor(book => book.Title)
                 .NotNull()
                 .NotEmpty()
@@ -13,11 +14,11 @@ namespace BookCatalog.Validations
             RuleFor(book => book.Author)
                 .NotNull()
                 .NotEmpty()
-                .Length(1,50);
+                .Length(1, 50);
             RuleFor(book => book.Genre)
                 .NotNull()
                 .NotEmpty()
-                .Length(1,50);
+                .Length(1, 50);
             RuleFor(book => book.PageCount)
                 .NotNull()
                 .NotEmpty().WithMessage("Page Count must be greater than 0.")

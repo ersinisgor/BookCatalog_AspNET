@@ -1,4 +1,4 @@
-﻿using BookCatalog.Models;
+﻿using BookCatalog.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookCatalog.Data
