@@ -4,7 +4,7 @@ using BookCatalog.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookCatalog.Controllers
+namespace BookCatalog.Application.Controllers
 {
     public class HomeController : Controller
     {
