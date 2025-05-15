@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using BookCatalog.Domain.Entities;
 using BookCatalog.Infrastructure.Data;
-using BookCatalog.Models;
+using BookCatalog.Shared.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,19 +34,5 @@ namespace BookCatalog.Application.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult TestDb()
-        {
-            var book = new Book
-            {
-                Title = "Test",
-                Author = "Author",
-                Genre = "Fiction",
-                PageCount = 100
-            };
-            _context.Books.Add(book);
-            _context.SaveChanges();
-            var books = _context.Books.ToList();
-            return Json(books);
-        }
     }
 }

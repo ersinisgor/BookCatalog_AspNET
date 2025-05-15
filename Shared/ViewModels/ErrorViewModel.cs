@@ -1,4 +1,4 @@
-namespace BookCatalog.Models
+namespace BookCatalog.Shared.ViewModels
 {
     public class ErrorViewModel
     {
