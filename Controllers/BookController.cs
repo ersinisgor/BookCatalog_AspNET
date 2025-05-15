@@ -76,7 +76,7 @@ namespace BookCatalog.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Book book)
+        public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] Book book)
         {
             try
             {
@@ -103,6 +103,29 @@ namespace BookCatalog.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "Error updating book");
+                return View("Error");
+            }
+        }
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed([FromRoute] int id)
+        {
+            try
+            {
+                var book = await _context.Books.FindAsync(id);
+                if (book != null)
+                {
+                    _context.Books.Remove(book);
+                    await _context.SaveChangesAsync();
+                    Log.Information("Book deleted: Id={Id}", id);
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error deleting book");
                 return View("Error");
             }
         }
