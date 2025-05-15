@@ -19,6 +19,7 @@ namespace BookCatalog.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "Error retrieving books");
+                TempData["ErrorMessage"] = "Kitaplar getirilirken bir hata oluştu.";
                 return View("Error");
             }
         }
@@ -47,11 +48,13 @@ namespace BookCatalog.Controllers
                 _context.Books.Add(book);
                 await _context.SaveChangesAsync();
                 Log.Information("New book added: {@Book}", book);
+                TempData["SuccessMessage"] = $"Kitap '{book.Title}' başarıyla eklendi.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error adding new book");
+                TempData["ErrorMessage"] = "Yeni kitap eklenirken bir hata oluştu.";
                 return View("Error");
             }
         }
@@ -63,6 +66,7 @@ namespace BookCatalog.Controllers
                 var book = await _context.Books.FindAsync(id);
                 if (book == null)
                 {
+                    TempData["ErrorMessage"] = "Kitap bulunamadı.";
                     return NotFound();
                 }
                 return View(book);
@@ -70,6 +74,7 @@ namespace BookCatalog.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "Error retrieving book for edit");
+                TempData["ErrorMessage"] = "Kitap düzenleme için getirilirken bir hata oluştu.";
                 return View("Error");
             }
         }
@@ -82,6 +87,7 @@ namespace BookCatalog.Controllers
             {
                 if (id != book.Id)
                 {
+                    TempData["ErrorMessage"] = "Geçersiz kitap kimliği.";
                     return BadRequest();
                 }
 
@@ -98,11 +104,13 @@ namespace BookCatalog.Controllers
                 _context.Update(book);
                 await _context.SaveChangesAsync();
                 Log.Information("Book updated: {@Book}", book);
+                TempData["SuccessMessage"] = $"Kitap '{book.Title}' başarıyla güncellendi.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error updating book");
+                TempData["ErrorMessage"] = "Kitap güncellenirken bir hata oluştu.";
                 return View("Error");
             }
         }
@@ -114,6 +122,7 @@ namespace BookCatalog.Controllers
                 var book = await _context.Books.FindAsync(id);
                 if (book == null)
                 {
+                    TempData["ErrorMessage"] = "Kitap bulunamadı.";
                     return NotFound();
                 }
                 return View(book);
@@ -121,6 +130,7 @@ namespace BookCatalog.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "Error retrieving book for deletion");
+                TempData["ErrorMessage"] = "Kitap silme için getirilirken bir hata oluştu.";
                 return View("Error");
             }
         }
@@ -132,18 +142,23 @@ namespace BookCatalog.Controllers
             try
             {
                 var book = await _context.Books.FindAsync(id);
-                if (book != null)
+                if (book == null)
                 {
-                    _context.Books.Remove(book);
-                    await _context.SaveChangesAsync();
-                    Log.Information("Book deleted: Id={Id}", id);
+                    TempData["ErrorMessage"] = "Kitap bulunamadı.";
+                    return RedirectToAction(nameof(Index));
                 }
+
+                _context.Books.Remove(book);
+                await _context.SaveChangesAsync();
+                Log.Information("Book deleted: Id={Id}, Title={Title}", id, book.Title);
+                TempData["SuccessMessage"] = $"Kitap '{book.Title}' başarıyla silindi.";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error deleting book");
-                return View("Error");
+                Log.Error(ex, "Error deleting book with Id={Id}", id);
+                TempData["ErrorMessage"] = "Kitap silinirken bir hata oluştu.";
+                return RedirectToAction(nameof(Index));
             }
         }
     }
