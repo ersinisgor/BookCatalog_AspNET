@@ -1,11 +1,12 @@
 ﻿using BookCatalog.Data;
 using BookCatalog.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
 namespace BookCatalog.Controllers
 {
-    public class BookController(ApplicationDbContext _context) : Controller
+    public class BookController(ApplicationDbContext _context, IValidator<Book> _validator) : Controller
     {
         public IActionResult Index()
         {
@@ -20,16 +21,31 @@ namespace BookCatalog.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Book book)
+        public IActionResult Create([FromForm] Book book)
         {
-            if (ModelState.IsValid)
+            var validationResult = _validator.Validate(book);
+            if (!validationResult.IsValid)
             {
-                _context.Books.Add(book);
-                _context.SaveChanges();
-                Log.Information("New book added: {@Book}", book);
-                return RedirectToAction(nameof(Index));
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+                return View(book);
             }
-            return View(book);
+
+            _context.Books.Add(book);
+            _context.SaveChanges();
+            Log.Information("New book added: {@Book}", book);
+            return RedirectToAction(nameof(Index));
+
+            //if (ModelState.IsValid)
+            //{
+            //    _context.Books.Add(book);
+            //    _context.SaveChanges();
+            //    Log.Information("New book added: {@Book}", book);
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //return View(book);
         }
     }
 }
