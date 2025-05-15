@@ -55,5 +55,56 @@ namespace BookCatalog.Controllers
                 return View("Error");
             }
         }
+
+        public async Task<IActionResult> Edit([FromRoute] int id)
+        {
+            try
+            {
+                var book = await _context.Books.FindAsync(id);
+                if (book == null)
+                {
+                    return NotFound();
+                }
+                return View(book);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error retrieving book for edit");
+                return View("Error");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Book book)
+        {
+            try
+            {
+                if (id != book.Id)
+                {
+                    return BadRequest();
+                }
+
+                var validationResult = await _validator.ValidateAsync(book);
+                if (!validationResult.IsValid)
+                {
+                    foreach (var error in validationResult.Errors)
+                    {
+                        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    }
+                    return View(book);
+                }
+
+                _context.Update(book);
+                await _context.SaveChangesAsync();
+                Log.Information("Book updated: {@Book}", book);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error updating book");
+                return View("Error");
+            }
+        }
     }
 }
