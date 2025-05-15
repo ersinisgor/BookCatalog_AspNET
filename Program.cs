@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using FluentValidation;
-using BookCatalog.Validations;
+using BookCatalog.Domain.Validators;
 using BookCatalog.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
