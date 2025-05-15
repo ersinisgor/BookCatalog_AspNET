@@ -30,31 +30,30 @@ namespace BookCatalog.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([FromForm] Book book)
+        public async Task<IActionResult> Create([FromForm] Book book)
         {
-            var validationResult = _validator.Validate(book);
-            if (!validationResult.IsValid)
+            try
             {
-                foreach (var error in validationResult.Errors)
+                var validationResult = await _validator.ValidateAsync(book);
+                if (!validationResult.IsValid)
                 {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    foreach (var error in validationResult.Errors)
+                    {
+                        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    }
+                    return View(book);
                 }
-                return View(book);
+
+                _context.Books.Add(book);
+                await _context.SaveChangesAsync();
+                Log.Information("New book added: {@Book}", book);
+                return RedirectToAction(nameof(Index));
             }
-
-            _context.Books.Add(book);
-            _context.SaveChanges();
-            Log.Information("New book added: {@Book}", book);
-            return RedirectToAction(nameof(Index));
-
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Books.Add(book);
-            //    _context.SaveChanges();
-            //    Log.Information("New book added: {@Book}", book);
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //return View(book);
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error adding new book");
+                return View("Error");
+            }
         }
     }
 }
