@@ -3,6 +3,7 @@ using Serilog;
 using FluentValidation;
 using BookCatalog.Domain.Validators;
 using BookCatalog.Infrastructure.Data;
+using BookCatalog.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddControllersWithViews().AddRazorOptions(options =>
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IBookRepository, BookRepository>();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day)
