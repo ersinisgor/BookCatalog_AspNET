@@ -1,4 +1,6 @@
-﻿using BookCatalog.Domain.Entities;
+﻿using AutoMapper;
+using BookCatalog.Application.Services;
+using BookCatalog.Domain.Entities;
 using BookCatalog.Infrastructure.Data;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -7,22 +9,23 @@ using Serilog;
 
 namespace BookCatalog.Presentation.Controllers
 {
-    public class BookController(ApplicationDbContext _context, IValidator<Book> _validator) : Controller
+    public class BookController(ApplicationDbContext _context, IValidator<Book> _validator, IBookService bookService) : Controller
     {
         public async Task<IActionResult> Index()
         {
             try
             {
-                var books = await _context.Books.ToListAsync();
+                var books = await bookService.GetBooksAsync();
                 return View(books);
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error retrieving books");
-                TempData["ErrorMessage"] = "Kitaplar getirilirken bir hata oluştu.";
+                TempData["ErrorMessage"] = "There was an error fetching the books.";
                 return View("Error");
             }
         }
+
 
         public IActionResult Create()
         {
