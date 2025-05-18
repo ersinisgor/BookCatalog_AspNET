@@ -56,6 +56,27 @@ namespace BookCatalog.Presentation.Controllers
                 return View("Error");
             }
         }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            try
+            {
+                var book = await bookService.GetBookByIdAsync(id);
+                if (book == null)
+                {
+                    TempData["ErrorMessage"] = "Book not found.";
+                    return NotFound();
+                }
+                return View(book);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error retrieving book details for ID={Id}", id);
+                TempData["ErrorMessage"] = "An error occurred while fetching book details.";
+                return View("Error");
+            }
+        }
+
         //public async Task<IActionResult> Create([FromForm] Book book)
         //{
         //    try
