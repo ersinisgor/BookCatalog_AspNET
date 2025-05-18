@@ -8,8 +8,9 @@ namespace BookCatalog.Shared.Mapping
     {
         public BookProfile()
         {
-            CreateMap<CreateBookDTO, Book>();
             CreateMap<Book, BookDTO>();
+            CreateMap<CreateBookDTO, Book>();
+            CreateMap<Book, UpdateBookDTO>();
         }
     }
 }
