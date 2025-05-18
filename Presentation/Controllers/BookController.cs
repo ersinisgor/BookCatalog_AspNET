@@ -6,7 +6,11 @@ using Serilog;
 
 namespace BookCatalog.Presentation.Controllers
 {
-    public class BookController(IValidator<CreateBookDTO> createValidator,[FromServices] IBookService bookService) : Controller
+    public class BookController(
+        IValidator<CreateBookDTO> createValidator,
+        IValidator<UpdateBookDTO> updateValidator,
+        [FromServices] IBookService bookService
+        ) : Controller
     {
         public async Task<IActionResult> Index()
         {
@@ -77,89 +81,62 @@ namespace BookCatalog.Presentation.Controllers
             }
         }
 
-        //public async Task<IActionResult> Create([FromForm] Book book)
-        //{
-        //    try
-        //    {
-        //        var validationResult = await _validator.ValidateAsync(book);
-        //        if (!validationResult.IsValid)
-        //        {
-        //            foreach (var error in validationResult.Errors)
-        //            {
-        //                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-        //            }
-        //            return View(book);
-        //        }
+        public async Task<IActionResult> Edit([FromRoute] int id)
+        {
+            try
+            {
+                var book = await bookService.GetBookByIdAsync(id);
+                if (book == null)
+                {
+                    TempData["ErrorMessage"] = "Book not found.";
+                    return NotFound();
+                }
 
-        //        _context.Books.Add(book);
-        //        await _context.SaveChangesAsync();
-        //        Log.Information("New book added: {@Book}", book);
-        //        TempData["SuccessMessage"] = $"Kitap '{book.Title}' başarıyla eklendi.";
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(ex, "Error adding new book");
-        //        TempData["ErrorMessage"] = "Yeni kitap eklenirken bir hata oluştu.";
-        //        return View("Error");
-        //    }
-        //}
+                var updateDto = new UpdateBookDTO
+                {
+                    Title = book.Title,
+                    Author = book.Author,
+                    Genre = book.Genre,
+                    PageCount = book.PageCount
+                };
+                return View(updateDto);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error retrieving book for edit, ID={Id}", id);
+                TempData["ErrorMessage"] = "There was an error bringing the book in for editing.";
+                return View("Error");
+            }
+        }
 
-        //public async Task<IActionResult> Edit([FromRoute] int id)
-        //{
-        //    try
-        //    {
-        //        var book = await _context.Books.FindAsync(id);
-        //        if (book == null)
-        //        {
-        //            TempData["ErrorMessage"] = "Kitap bulunamadı.";
-        //            return NotFound();
-        //        }
-        //        return View(book);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(ex, "Error retrieving book for edit");
-        //        TempData["ErrorMessage"] = "Kitap düzenleme için getirilirken bir hata oluştu.";
-        //        return View("Error");
-        //    }
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] UpdateBookDTO updateDto)
+        {
+            try
+            {
+                var validationResult = await updateValidator.ValidateAsync(updateDto);
+                if (!validationResult.IsValid)
+                {
+                    foreach (var error in validationResult.Errors)
+                    {
+                        ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                    }
+                    return View(updateDto);
+                }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit([FromRoute] int id, [FromForm] Book book)
-        //{
-        //    try
-        //    {
-        //        if (id != book.Id)
-        //        {
-        //            TempData["ErrorMessage"] = "Geçersiz kitap kimliği.";
-        //            return BadRequest();
-        //        }
-
-        //        var validationResult = await _validator.ValidateAsync(book);
-        //        if (!validationResult.IsValid)
-        //        {
-        //            foreach (var error in validationResult.Errors)
-        //            {
-        //                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-        //            }
-        //            return View(book);
-        //        }
-
-        //        _context.Update(book);
-        //        await _context.SaveChangesAsync();
-        //        Log.Information("Book updated: {@Book}", book);
-        //        TempData["SuccessMessage"] = $"Kitap '{book.Title}' başarıyla güncellendi.";
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(ex, "Error updating book");
-        //        TempData["ErrorMessage"] = "Kitap güncellenirken bir hata oluştu.";
-        //        return View("Error");
-        //    }
-        //}
+                await bookService.UpdateBookAsync(id, updateDto);
+                Log.Information("Book updated: ID={Id}, {@UpdateDto}", id, updateDto);
+                TempData["SuccessMessage"] = $"Book '{updateDto.Title ?? "updated"}' successfully updated.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error updating book, ID={Id}", id);
+                TempData["ErrorMessage"] = "An error occurred while updating the book.";
+                return View("Error");
+            }
+        }
 
         //public async Task<IActionResult> Delete([FromRoute] int id)
         //{
