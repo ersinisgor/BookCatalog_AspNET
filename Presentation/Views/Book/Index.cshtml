@@ -1,0 +1,51 @@
+﻿@model IEnumerable<BookCatalog.Shared.DTOs.BookDTO>
+
+@{
+	ViewBag.Title = "Books List";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+	<div class="alert alert-success alert-dismissible fade show" role="alert">
+		@TempData["SuccessMessage"]
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+	<div class="alert alert-danger alert-dismissible fade show" role="alert">
+		@TempData["ErrorMessage"]
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+}
+
+<h2>Books List</h2>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Title</th>
+			<th>Author</th>
+			<th>Genre</th>
+			<th>Page Count</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var book in Model)
+		{
+			<tr>
+				<td><a asp-action="Details" asp-route-id="@book.Id">@book.Title</a></td>
+				<td>@book.Author</td>
+				<td>@book.Genre</td>
+				<td>@book.PageCount</td>
+				<td>
+					<a asp-action="Edit" asp-route-id="@book.Id">Edit</a> |
+					<a asp-action="Delete" asp-route-id="@book.Id">Delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Add New Book</a>
