@@ -23,6 +23,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddAutoMapper(typeof(BookProfile));
+builder.Services.AddValidatorsFromAssemblyContaining<CreateBookValidator>();
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day)
