@@ -2,7 +2,6 @@
 using BookCatalog.Domain.Entities;
 using BookCatalog.Infrastructure.Repositories;
 using BookCatalog.Shared.DTOs;
-using Microsoft.AspNetCore.Mvc;
 
 namespace BookCatalog.Application.Services
 {
@@ -14,7 +13,13 @@ namespace BookCatalog.Application.Services
             return mapper.Map<IEnumerable<BookDTO>>(books);
         }
 
-        public async Task AddBookAsync([FromForm] CreateBookDTO createDto, CancellationToken cancellationToken = default)
+        public async Task<BookDTO> GetBookByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var book = await bookRepository.GetBookByIdAsync(id, cancellationToken);
+            return book != null ? mapper.Map<BookDTO>(book) : null;
+        }
+
+        public async Task AddBookAsync(CreateBookDTO createDto, CancellationToken cancellationToken = default)
         {
             var book = mapper.Map<Book>(createDto);
             await bookRepository.AddBookAsync(book, cancellationToken);
