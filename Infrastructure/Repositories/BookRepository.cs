@@ -27,5 +27,15 @@ namespace BookCatalog.Infrastructure.Repositories
             context.Books.Update(book);
             await context.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task DeleteBookAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var book = await GetBookByIdAsync(id, cancellationToken);
+            if (book != null)
+            {
+                context.Books.Remove(book);
+                await context.SaveChangesAsync(cancellationToken);
+            }
+        }
     }
 }

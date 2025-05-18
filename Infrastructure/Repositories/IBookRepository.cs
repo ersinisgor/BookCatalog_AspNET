@@ -7,7 +7,7 @@ namespace BookCatalog.Infrastructure.Repositories
         Task<IEnumerable<Book>> GetBooksAsync(CancellationToken cancellationToken = default);
         Task<Book> GetBookByIdAsync(int id, CancellationToken cancellationToken = default);
         Task AddBookAsync(Book book, CancellationToken cancellationToken = default);
-
         Task UpdateBookAsync(Book book, CancellationToken cancellationToken = default);
+        Task DeleteBookAsync(int id, CancellationToken cancellationToken = default);
     }
 }
