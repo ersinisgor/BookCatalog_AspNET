@@ -1,5 +1,4 @@
 ﻿using BookCatalog.Shared.DTOs;
-using Microsoft.AspNetCore.Mvc;
 
 namespace BookCatalog.Application.Services
 {
@@ -8,5 +7,7 @@ namespace BookCatalog.Application.Services
         Task<IEnumerable<BookDTO>> GetBooksAsync(CancellationToken cancellationToken = default);
         Task<BookDTO> GetBookByIdAsync(int id, CancellationToken cancellationToken = default);
         Task AddBookAsync(CreateBookDTO createDto, CancellationToken cancellationToken = default);
+
+        Task UpdateBookAsync(int id, UpdateBookDTO updateDto, CancellationToken cancellationToken = default);
     }
 }
