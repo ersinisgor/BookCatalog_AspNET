@@ -61,7 +61,7 @@ namespace BookCatalog.Presentation.Controllers
             }
         }
 
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details([FromRoute] int id)
         {
             try
             {
@@ -138,51 +138,44 @@ namespace BookCatalog.Presentation.Controllers
             }
         }
 
-        //public async Task<IActionResult> Delete([FromRoute] int id)
-        //{
-        //    try
-        //    {
-        //        var book = await _context.Books.FindAsync(id);
-        //        if (book == null)
-        //        {
-        //            TempData["ErrorMessage"] = "Kitap bulunamadı.";
-        //            return NotFound();
-        //        }
-        //        return View(book);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(ex, "Error retrieving book for deletion");
-        //        TempData["ErrorMessage"] = "Kitap silme için getirilirken bir hata oluştu.";
-        //        return View("Error");
-        //    }
-        //}
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            try
+            {
+                var book = await bookService.GetBookByIdAsync(id);
+                if (book == null)
+                {
+                    TempData["ErrorMessage"] = "Book not found.";
+                    return NotFound();
+                }
+                return View(book);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error retrieving book for deletion");
+                TempData["ErrorMessage"] = "An error occurred while fetching the book for deletion.";
+                return View("Error");
+            }
+        }
 
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed([FromRoute] int id)
-        //{
-        //    try
-        //    {
-        //        var book = await _context.Books.FindAsync(id);
-        //        if (book == null)
-        //        {
-        //            TempData["ErrorMessage"] = "Kitap bulunamadı.";
-        //            return RedirectToAction(nameof(Index));
-        //        }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed([FromRoute] int id)
+        {
+            try
+            {
+                await bookService.DeleteBookAsync(id);
+                Log.Information("Book deleted: Id={Id}", id);
+                TempData["SuccessMessage"] = "The book was successfully deleted.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error deleting book with Id={Id}", id);
+                TempData["ErrorMessage"] = "An error occurred while deleting the book.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
 
-        //        _context.Books.Remove(book);
-        //        await _context.SaveChangesAsync();
-        //        Log.Information("Book deleted: Id={Id}, Title={Title}", id, book.Title);
-        //        TempData["SuccessMessage"] = $"Kitap '{book.Title}' başarıyla silindi.";
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(ex, "Error deleting book with Id={Id}", id);
-        //        TempData["ErrorMessage"] = "Kitap silinirken bir hata oluştu.";
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //}
     }
 }
