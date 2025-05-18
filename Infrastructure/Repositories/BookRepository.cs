@@ -11,6 +11,11 @@ namespace BookCatalog.Infrastructure.Repositories
             return await context.Books.ToListAsync(cancellationToken);
         }
 
+        public async Task<Book> GetBookByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            return await context.Books.FindAsync(id, cancellationToken);
+        }
+
         public async Task AddBookAsync(Book book, CancellationToken cancellationToken = default)
         {
             await context.Books.AddAsync(book, cancellationToken);
