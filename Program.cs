@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using FluentValidation;
-using BookCatalog.Domain.Validators;
 using BookCatalog.Infrastructure.Data;
 using BookCatalog.Infrastructure.Repositories;
 using BookCatalog.Application.Services;
@@ -23,16 +22,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddAutoMapper(typeof(BookProfile));
-builder.Services.AddValidatorsFromAssemblyContaining<CreateBookValidator>();
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 builder.Host.UseSerilog();
-
-//builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
-builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
-//builder.Services.AddFluentValidationClientsideAdapters();
 
 var app = builder.Build();
 
