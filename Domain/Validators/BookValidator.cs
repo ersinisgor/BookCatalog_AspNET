@@ -1,11 +1,11 @@
-﻿using BookCatalog.Domain.Entities;
+﻿using BookCatalog.Shared.DTOs;
 using FluentValidation;
 
 namespace BookCatalog.Domain.Validators
 {
-    public class BookValidator : AbstractValidator<Book>
+    public class CreateBookValidator : AbstractValidator<CreateBookDTO>
     {
-        public BookValidator()
+        public CreateBookValidator()
         {
             RuleFor(book => book.Title)
                 .NotNull()
