@@ -21,5 +21,11 @@ namespace BookCatalog.Infrastructure.Repositories
             await context.Books.AddAsync(book, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task UpdateBookAsync(Book book, CancellationToken cancellationToken = default)
+        {
+            context.Books.Update(book);
+            await context.SaveChangesAsync(cancellationToken);
+        }
     }
 }
