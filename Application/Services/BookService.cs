@@ -33,7 +33,6 @@ namespace BookCatalog.Application.Services
                 throw new ArgumentNullException(nameof(id), $"Book with ID {id} not found.");
             }
 
-            // Update only provided fields
             if (updateDto.Title != null)
                 book.Title = updateDto.Title;
             if (updateDto.Author != null)
@@ -44,6 +43,11 @@ namespace BookCatalog.Application.Services
                 book.PageCount = updateDto.PageCount.Value;
 
             await bookRepository.UpdateBookAsync(book, cancellationToken);
+        }
+
+        public async Task DeleteBookAsync(int id, CancellationToken cancellationToken = default)
+        {
+            await bookRepository.DeleteBookAsync(id, cancellationToken);
         }
     }
 }
