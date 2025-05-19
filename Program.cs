@@ -34,12 +34,13 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseRouting();
+app.UseSerilogRequestLogging();
 
+app.UseRouting();
 app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
